@@ -4,6 +4,13 @@ A jQuery plugin to easily implement mutually exclusive form fields.
 
 Currently only works on text fields via `$.greyout();`.
 
+## the theory ##
+
+* some elements are defined as `controller` elements
+* other elements can be `minions` by specifying their `controller`
+* when a `controller` element is given a value, all other `controller` elements (and the `minions` belonging to them) are disabled
+* removing the given value will re-enable the other elements
+
 ## to do ##
 
 * modify to allow grouping of `controller` elements
@@ -48,7 +55,3 @@ $.greyout({
 	}
 });
 ```
-
-## structure ##
-
-Some elements are defined as `controller` elements. Other elements can be `minions` by specifying their `controller`. When a `controller` element is given a value, all other `controller` elements (and the `minions` belonging to them) are disabled. Removing the given value will re-enable the other elements.
