@@ -1,14 +1,13 @@
 var greyout = function(opts){
+	if(this === window) return false;
 	if(opts !== undefined && typeof opts !== 'object') return false;
 	var _grey = {};
-	_grey.jQuery = (this !== window);
 	_grey.find = ((typeof opts === 'undefined') ? true : ((typeof opts.ids === 'undefined') ? true : false ));
 	_grey.act = ((typeof opts !== 'undefined') ? ((typeof opts.act === 'undefined') ? 'disable' : opts.act ) : 'disable');
 
 	_grey.parseAttribs = function(elem){
 		_grey.elems = _grey.elems || {};
-		elem = ((typeof elem === 'object') ? elem : ((_grey.jQuery) ? jQuery('#'+elem) : document.getElementById(elem)));
-		// console.log(elem);
+		elem = jQuery('#'+elem);
 		for(i = 0, a = elem.attributes, l = a.length; i < l; i++){
 			attrib = a[i];
 			if(typeof attrib.nodeName !== 'undefined' && attrib.nodeName.indexOf('data-greyout-') >= 0){
@@ -17,7 +16,6 @@ var greyout = function(opts){
 					case 'type':
 						if(attrib.nodeValue === 'controller'){
 							_grey.elems[elem.id] = ((typeof _grey.elems[elem.id] === 'undefined') ? {name: elem.id, minions: []} : _grey.elems[elem.id]);
-							// console.log(_grey.elems);
 						}
 						break;
 					case 'controller':
@@ -55,79 +53,44 @@ var greyout = function(opts){
 		}
 	};
 	_grey.hider = function(elem){
-		elem = ((_grey.jQuery) ? '#'+elem : elem);
-		if(_grey.jQuery){
-			if(jQuery(elem).val().length > 0){
-				jQuery(elem).attr('data-greyout-oldval', jQuery(elem).val());
-				jQuery(elem).val(null);
-			}
-		} else {
-			_el = document.getElementById(elem);
-			if(_el.value.length > 0){
-				_el.attributes['data-greyout-oldval'] = _el.value;
-				_el.value = null;
-			}
+		elem = '#'+elem;
+		if(jQuery(elem).val().length > 0){
+			jQuery(elem).attr('data-greyout-oldval', jQuery(elem).val());
+			jQuery(elem).val(null);
 		}
 		switch(_grey.act){
 			case 'hide':
-				if(_grey.jQuery && jQuery.hide){
+				if(jQuery.hide){
 					jQuery(elem).hide();
 				}
 			case 'disable':
 			default:
-				if(_grey.jQuery){
-					jQuery(elem).attr('disabled', 'disabled');
-				} else {
-					_el.attributes['disabled'] = 'disabled';
-				}
+				jQuery(elem).attr('disabled', 'disabled');
 				break;
 		}
 	};
 	_grey.shower = function(elem){
-		elem = ((_grey.jQuery) ? '#'+elem : elem);
-		if(_grey.jQuery){
-			if(typeof jQuery(elem).attr('data-greyout-oldval') !== 'undefined'){
-				jQuery(elem).val(jQuery(elem).attr('data-greyout-oldval'));
-				jQuery(elem).removeAttr('data-greyout-oldval');
-			}
-		} else {
-			_el = document.getElementById(elem);
-			if(_el.attributes['data-greyout-oldval'].length > 0){
-				_el.value = _el.attributes['data-greyout-oldval'];
-				_el.attributes['data-greyout-oldval'] = null;
-			}
+		elem = '#'+elem;
+		if(typeof jQuery(elem).attr('data-greyout-oldval') !== 'undefined'){
+			jQuery(elem).val(jQuery(elem).attr('data-greyout-oldval'));
+			jQuery(elem).removeAttr('data-greyout-oldval');
 		}
 		switch(_grey.act){
 			case 'hide':
-				if(_grey.jQuery && jQuery.show){
+				if(jQuery.show){
 					jQuery(elem).show();
 				}
 			case 'disable':
 			default:
-				if(_grey.jQuery){
-					jQuery(elem).removeAttr('disabled');
-				} else {
-					_el.attributes['disabled'] = null;
-				}
+				jQuery(elem).removeAttr('disabled');
 				break;
 		}
 	};
 
 	if(_grey.find){
-		if(_grey.jQuery){
-			jQuery.each(jQuery('input[type="text"]'), function(i, v){
-				_grey.parseAttribs(v);
-			});
-		} else {
-			elems = document.getElementsByTagName('input');
-			// console.log(elems.length);
-			for(i = 0, l = elems.length; i < l; i++){
-				// console.log(i, l, elems[i]);
-				if(typeof elems[i].attributes !== 'undefined' && elems[i].attributes.type.nodeValue.toLowerCase() === 'text'){
-					_grey.parseAttribs(elems[i]);
-				}
-			}
-		}
+		jQuery.each(jQuery('input[type="text"]'), function(i, v){
+			_grey.parseAttribs(v);
+		});
 	} else {
 		_grey.elems = opts.ids;
 	}
@@ -135,12 +98,7 @@ var greyout = function(opts){
 	for(elem in _grey.elems){
 		elem = _grey.elems[elem];
 		if(typeof elem.name !== 'undefined'){
-			if(_grey.jQuery){
-				jQuery('#'+elem.name).on('keyup', _grey.keyup);
-			} else {
-				_el = document.getElementById(elem.name);
-				_el.onkeyup = _grey.keyup;
-			}
+			jQuery('#'+elem.name).on('keyup', _grey.keyup);
 		}
 	}
 
