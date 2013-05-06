@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8' />
+	<style>
+	body{
+		font-family: Calibri, Helvetica, sans-serif;
+	}
+	#container{
+		width: 700px;
+		margin: 0 auto;
+		padding: 10px 5px;
+	}
+	</style>
+	<title>GreyOut Test</title>
+</head>
+	<body>
+		<div id="container">
+			<input type="text" name="input0" id="input0" data-greyout-type="controller" />
+			<input type="text" name="input1" id="input1" data-greyout-type="controller" />
+			<input type="text" name="input2" id="input2" data-greyout-controller="input0" />
+		</div>
+	</body>
+	<script src='jquery-1.9.1.min.js'></script>
+	<script src='greyout.js'></script>
+	<script>
+	// greyout();
+	$.greyout();
+	</script>
+</html>
