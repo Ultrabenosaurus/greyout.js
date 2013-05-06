@@ -149,7 +149,6 @@ var greyout = function(opts){
 
 if(typeof jQuery !== 'undefined'){
 	(function($){
-		// $.fn.greyout = greyout;
 		$.greyout = greyout;
 		greyout = null;
 	})(jQuery);

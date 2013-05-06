@@ -15,16 +15,32 @@
 	<title>GreyOut Test</title>
 </head>
 	<body>
-		<div id="container">
+		<!-- <div id="container">
 			<input type="text" name="input0" id="input0" data-greyout-type="controller" />
 			<input type="text" name="input1" id="input1" data-greyout-type="controller" />
 			<input type="text" name="input2" id="input2" data-greyout-controller="input0" />
+		</div> -->
+		<div id="container">
+			<input type="text" name="input0" id="input0" />
+			<input type="text" name="input1" id="input1" />
+			<input type="text" name="input2" id="input2" />
 		</div>
 	</body>
 	<script src='jquery-1.9.1.min.js'></script>
 	<script src='greyout.js'></script>
 	<script>
 	// greyout();
-	$.greyout();
+	$.greyout({
+		ids: {
+			input0: {
+				name: 'input0',
+				minions: ['input2']
+			},
+			input1: {
+				name: 'input1',
+				minions: []
+			}
+		}
+	});
 	</script>
 </html>
