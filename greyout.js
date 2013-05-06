@@ -7,8 +7,33 @@ var greyout = function(opts){
 
 	_grey.parseAttribs = function(elem){
 		_grey.elems = _grey.elems || {};
-		elem = jQuery('#'+elem);
-		for(i = 0, a = elem.attributes, l = a.length; i < l; i++){
+		elem = ((typeof elem === 'object') ? jQuery(elem) : jQuery('#'+elem));
+		if(typeof elem.data('greyout-group') === 'undefined'){
+			elem.data('greyout-group', 'greyout');
+		}
+		if(typeof elem.data('greyout-type') !== 'undefined'){
+			switch(elem.data('greyout-type')){
+				case 'controller':
+				default:
+					_group = elem.data('greyout-group');
+					_grey.elems[_group] = ((typeof _grey.elems[_group] === 'undefined') ? {name: _group, elems: {}} : _grey.elems[_group]);
+					console.log(_grey.elems[_group]);
+					_grey.elems[_group].elems[elem.id] = ((typeof _grey.elems[_group].elems[elem.id] === 'undefined') ? {name: elem.id, minions: []} : _grey.elems[_group].elems[elem.id]);
+					break;
+			}
+		}
+		if(typeof elem.data('greyout-controller') !== 'undefined'){
+			_group = elem.data('greyout-group');
+			_contr = elem.data('greyout-controller');
+			if(typeof _grey.elems[_group] == 'undefined'){
+				_grey.elems[_group] = ((typeof _grey.elems[_group] === 'undefined') ? {name: _group, elems: {}} : _grey.elems[_group]);
+			}
+			if(typeof _grey.elems[_group].elems[_contr] == 'undefined'){
+				_grey.elems[_group].elems[_contr] = ((typeof _grey.elems[_group].elems[_contr] === 'undefined') ? {name: _contr, minions: [elem.id]} : _grey.elems[_group].elems[_contr]);
+			}
+			_grey.elems[_group].elems[_contr].minions.push(elem.id);
+		}
+		/*for(i = 0, a = elem.attributes, l = a.length; i < l; i++){
 			attrib = a[i];
 			if(typeof attrib.nodeName !== 'undefined' && attrib.nodeName.indexOf('data-greyout-') >= 0){
 				_name = attrib.nodeName.substr(13);
@@ -27,7 +52,7 @@ var greyout = function(opts){
 						break;
 				}
 			}
-		}
+		}*/
 	};
 	_grey.keyup = function(e){
 		if(e.target.value.length > 0){
@@ -101,6 +126,7 @@ var greyout = function(opts){
 			jQuery('#'+elem.name).on('keyup', _grey.keyup);
 		}
 	}
+	console.log(_grey);
 
 	this._grey = _grey;
 }
