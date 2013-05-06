@@ -7,7 +7,7 @@ var greyout = function(opts){
 
 	_grey.parseAttribs = function(elem){
 		_grey.elems = _grey.elems || {};
-		elem = jQuery('#'+elem);
+		elem = ((typeof elem === 'object') ? jQuery(elem)[0] : jQuery('#'+elem)[0]);
 		for(i = 0, a = elem.attributes, l = a.length; i < l; i++){
 			attrib = a[i];
 			if(typeof attrib.nodeName !== 'undefined' && attrib.nodeName.indexOf('data-greyout-') >= 0){
