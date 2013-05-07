@@ -15,76 +15,68 @@
 	<title>GreyOut Test</title>
 </head>
 	<body>
-		<!--
-		 use the ones with data attributes with the empty constructor
-		 
-		 use the ones without data attributes with the object-fed constructor
-		 
-		 that said, if the 'hierarchy' object is found inside the object passed
-		 to the constructor, data attributes are ignored
-		-->
 		<div id="container">
-			<div id='group_1'>
-				<input type="text" name="input0" id="input0" data-greyout-group="group_1" data-greyout-type="controller" />
-				<input type="text" name="input1" id="input1" data-greyout-group="group_1" data-greyout-type="controller" />
-				<input type="text" name="input2" id="input2" data-greyout-group="group_1" data-greyout-controller="input0" />
+			<div id='data-attributes'>
+				<h3>Data Attributes</h3>
+				<input type="text" name="data1" id="data1" data-greyout-controllers="data2,data3,data6" />
+				<input type="text" name="data2" id="data2" data-greyout-controllers="data6" />
+				<input type="text" name="data3" id="data3" data-greyout-controllers="data6" /><br />
+				<input type="text" name="data4" id="data4" data-greyout-controllers="data2,data5,data6" />
+				<input type="text" name="data5" id="data5" data-greyout-controllers="data6" />
+				<input type="text" name="data6" id="data6" />
 			</div>
-			<div id='group_2'>
-				<input type="text" name="input3" id="input3" data-greyout-group="group_2" data-greyout-type="controller" />
-				<input type="text" name="input4" id="input4" data-greyout-group="group_2" data-greyout-type="controller" />
-				<input type="text" name="input5" id="input5" data-greyout-group="group_2" data-greyout-controller="input3" />
+			<div id='hierarchy-object'>
+				<h3>Hierarchy Object</h3>
+				<input type="text" name="hier1" id="hier1" />
+				<input type="text" name="hier2" id="hier2" />
+				<input type="text" name="hier3" id="hier3" /><br />
+				<input type="text" name="hier4" id="hier4" />
+				<input type="text" name="hier5" id="hier5" />
+				<input type="text" name="hier6" id="hier6" />
 			</div>
 		</div>
-		<!-- <div id="container">
-			<div id='group_1'>
-				<input type="text" name="input0" id="input0" />
-				<input type="text" name="input1" id="input1" />
-				<input type="text" name="input2" id="input2" />
-			</div>
-			<div id='group_2'>
-				<input type="text" name="input3" id="input3" />
-				<input type="text" name="input4" id="input4" />
-				<input type="text" name="input5" id="input5" />
-			</div>
-		</div> -->
 	</body>
 	<script src='jquery-1.9.1.min.js'></script>
 	<script src='greyout.js'></script>
 	<script>
-	$.greyout({logging: 2});
-	/*$.greyout({
+	$.greyout();
+	$.greyout({
 		hierarchy: {
-			group_1: {
-				name: 'group_1',
-				elems: {
-					input0: {
-						name: 'input0',
-						minions: [
-							'input2'
-						]
-					},
-					input1: {
-						name: 'input1',
-						minions: []
-					}
-				}
+			hier1: {
+				name: 'hier1',
+				controllers:[
+					'hier2',
+					'hier3',
+					'hier6'
+				]
 			},
-			group_2: {
-				name: 'group_2',
-				elems: {
-					input3: {
-						name: 'input3',
-						minions: [
-							'input5'
-						]
-					},
-					input4: {
-						name: 'input4',
-						minions: []
-					}
-				}
+			hier2: {
+				name: 'hier2',
+				controllers:[
+					'hier6'
+				]
+			},
+			hier3: {
+				name: 'hier3',
+				controllers:[
+					'hier6'
+				]
+			},
+			hier4: {
+				name: 'hier4',
+				controllers:[
+					'hier2',
+					'hier5',
+					'hier6'
+				]
+			},
+			hier5: {
+				name: 'hier5',
+				controllers:[
+					'hier6'
+				]
 			}
 		}
-	});*/
+	});
 	</script>
 </html>

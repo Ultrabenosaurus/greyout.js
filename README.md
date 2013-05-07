@@ -6,16 +6,12 @@ Currently only works on text fields.
 
 ## the theory ##
 
-* some elements are defined as `controller` elements
-* other elements can be `minions` by specifying their `controller`
-* when a `controller` element is given a value, all other `controller` elements (and the `minions` belonging to them) are disabled
-* removing the given value will re-enable the other elements
-* use groups to limit the effect of `controllers` like with Radio Buttons
+* some form elements are only needed if certain other elements aren't used
+* for each conditional element, specify the IDs of the element(s) that 'control' them
+* when any element that has been identified as a `controller` gets a value, the elements that have it as a `controller` will be disabled
 
 ## to do ##
 
-* modify to allow grouping of `controller` elements
-   * format implemented, need to test on multiple groups
 * expand to support all `input` types
 * add support for `select` boxes
 
@@ -23,20 +19,23 @@ Currently only works on text fields.
 
 You can use this plugin in two ways:
 
-* data attributes on the `input` elements
-* pass the constructor an object outlining the `controller` - `minion` relationships
+* data attribute on the `input` elements
+* pass the constructor an object outlining the `controllers`
 
 ### method one ###
 
-*data attributes*
+*data attribute*
 
-Either use data attributes on your `input` elements like so:
+Use a data attribute on your `input` elements like so:
 
 ```html
 <div id="container">
-	<input type="text" name="input0" id="input0" data-greyout-type="controller" />
-	<input type="text" name="input1" id="input1" data-greyout-type="controller" />
-	<input type="text" name="input2" id="input2" data-greyout-controller="input0" />
+	<input type="text" name="input1" id="input1" data-greyout-controllers="input2,input3,input6" />
+	<input type="text" name="input2" id="input2" data-greyout-controllers="input6" />
+	<input type="text" name="input3" id="input3" data-greyout-controllers="input6" />
+	<input type="text" name="input4" id="input4" data-greyout-controllers="input2,input5,input6" />
+	<input type="text" name="input5" id="input5" data-greyout-controllers="input6" />
+	<input type="text" name="input6" id="input6" />
 </div>
 ```
 
@@ -44,27 +43,26 @@ Then simply call `$.greyout();` to initialise the plugin.
 
 ### method two ###
 
-*`options` object*
+*`hierarchy` object*
 
 Do not use data attributes on your `input` elements, but instead pass a `hierarchy` object inside the `options` object when you call `$.greyout();` like so:
 
 ```js
 $.greyout({
 	hierarchy: {
-		group1: {
-			name: 'group1',
-			elems: {
-				input0: {
-					name: 'input0',
-					minions: [
-						'input2'
-					]
-				},
-				input1: {
-					name: 'input1',
-					minions: []
-				}
-			}
+		input1: {
+			name: 'input1',
+			controllers: [
+				'input2',
+				'input3'
+			]
+		},
+		input4: {
+			name: 'input4',
+			controllers: [
+				'input2',
+				'input5'
+			]
 		}
 	}
 });
