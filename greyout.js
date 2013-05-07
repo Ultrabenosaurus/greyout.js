@@ -14,7 +14,7 @@ var greyout = function(opts){
 
 		if(arguments.pop() <= _grey.logging){
 			console.log.apply(console, arguments);
-			if(typeof console !== 'undefined'){
+			if(typeof console.trace !== 'undefined'){
 				console.trace();
 			}
 		}
@@ -114,7 +114,6 @@ var greyout = function(opts){
 		_grey.groups = opts.hierarchy;
 		// _grey.assignAttribs();
 	}
-	_grey.logger(_grey.groups, 1);
 
 	for(gr in _grey.groups){
 		gr = _grey.groups[gr];
