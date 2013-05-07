@@ -3,7 +3,11 @@ var greyout = function(opts){
 	if(opts !== undefined && typeof opts !== 'object') return false;
 	var _grey = {};
 	_grey.find = ((typeof opts === 'undefined') ? true : ((typeof opts.hierarchy === 'undefined') ? true : false ));
-	_grey.act = ((typeof opts !== 'undefined') ? ((typeof opts.act === 'undefined') ? 'disable' : opts.act ) : 'disable');
+	_grey.action = ((typeof opts !== 'undefined') ? ((typeof opts.action === 'undefined') ? 'disable' : opts.action ) : 'disable');
+	_grey.placeholder = ((typeof opts !== 'undefined') ? ((typeof opts.placeholder === 'undefined') ? null : opts.placeholder ) : null);
+	_grey.contro_class = ((typeof opts !== 'undefined') ? ((typeof opts.contro_class === 'undefined') ? null : opts.contro_class ) : null);
+	_grey.condi_class = ((typeof opts !== 'undefined') ? ((typeof opts.condi_class === 'undefined') ? null : opts.condi_class ) : null);
+	_grey.dis_class = ((typeof opts !== 'undefined') ? ((typeof opts.dis_class === 'undefined') ? null : opts.dis_class ) : null);
 	_grey.logging = ((typeof opts !== 'undefined') ? ((typeof opts.logging === 'undefined') ? 0 : ((typeof opts.logging === 'number' && opts.logging >= 0) ? opts.logging : 0) ) : 0);
 
 	_grey.logger = function(){
@@ -55,24 +59,26 @@ var greyout = function(opts){
 			jQuery(elem).attr('data-greyout-oldval', jQuery(elem).val());
 			jQuery(elem).val(null);
 		}
-		switch(_grey.act){
+		switch(_grey.action){
 			case 'hide':
 				if(jQuery.hide){
 					jQuery(elem).hide();
 				}
 			case 'disable':
 			default:
+				jQuery(elem).attr('placeholder', _grey.placeholder);
 				jQuery(elem).attr('disabled', 'disabled');
 				break;
 		}
 	};
 	_grey.shower = function(elem){
 		elem = '#'+elem;
+		jQuery(elem).attr('placeholder', null);
 		if(typeof jQuery(elem).attr('data-greyout-oldval') !== 'undefined'){
 			jQuery(elem).val(jQuery(elem).attr('data-greyout-oldval'));
 			jQuery(elem).removeAttr('data-greyout-oldval');
 		}
-		switch(_grey.act){
+		switch(_grey.action){
 			case 'hide':
 				if(jQuery.show){
 					jQuery(elem).show();
@@ -83,6 +89,8 @@ var greyout = function(opts){
 				break;
 		}
 	};
+	
+	_grey.logger(_grey, 10)
 
 	if(_grey.find){
 		jQuery.each(jQuery('input'), function(i, v){
