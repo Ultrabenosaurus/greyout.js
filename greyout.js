@@ -2,76 +2,56 @@ var greyout = function(opts){
 	if(this === window) return false;
 	if(opts !== undefined && typeof opts !== 'object') return false;
 	var _grey = {};
-	_grey.find = ((typeof opts === 'undefined') ? true : ((typeof opts.ids === 'undefined') ? true : false ));
+	_grey.find = ((typeof opts === 'undefined') ? true : ((typeof opts.hierarchy === 'undefined') ? true : false ));
 	_grey.act = ((typeof opts !== 'undefined') ? ((typeof opts.act === 'undefined') ? 'disable' : opts.act ) : 'disable');
 
 	_grey.parseAttribs = function(elem){
-		_grey.elems = _grey.elems || {};
+		_grey.groups = _grey.groups || {};
 		elem = ((typeof elem === 'object') ? jQuery(elem) : jQuery('#'+elem));
 		if(typeof elem.data('greyout-group') === 'undefined'){
 			elem.data('greyout-group', 'greyout');
 		}
+		_group = elem.data('greyout-group');
 		if(typeof elem.data('greyout-type') !== 'undefined'){
 			switch(elem.data('greyout-type')){
 				case 'controller':
 				default:
-					_group = elem.data('greyout-group');
-					_grey.elems[_group] = ((typeof _grey.elems[_group] === 'undefined') ? {name: _group, elems: {}} : _grey.elems[_group]);
-					console.log(_grey.elems[_group]);
-					_grey.elems[_group].elems[elem.id] = ((typeof _grey.elems[_group].elems[elem.id] === 'undefined') ? {name: elem.id, minions: []} : _grey.elems[_group].elems[elem.id]);
+					_elid = ((typeof elem.id === 'undefined') ? elem[0].id : elem.id);
+					_grey.groups[_group] = ((typeof _grey.groups[_group] === 'undefined') ? {name: _group, elems: {}} : _grey.groups[_group]);
+					_grey.groups[_group].elems[_elid] = ((typeof _grey.groups[_group].elems[_elid] === 'undefined') ? {name: _elid, minions: []} : _grey.groups[_group].elems[_elid]);
 					break;
 			}
 		}
 		if(typeof elem.data('greyout-controller') !== 'undefined'){
-			_group = elem.data('greyout-group');
 			_contr = elem.data('greyout-controller');
-			if(typeof _grey.elems[_group] == 'undefined'){
-				_grey.elems[_group] = ((typeof _grey.elems[_group] === 'undefined') ? {name: _group, elems: {}} : _grey.elems[_group]);
+			_elid = ((typeof elem.id === 'undefined') ? elem[0].id : elem.id);
+			_grey.groups[_group] = ((typeof _grey.groups[_group] === 'undefined') ? {name: _group, elems: {}} : _grey.groups[_group]);
+			if(typeof _grey.groups[_group].elems[_contr] == 'undefined'){
+				_grey.groups[_group].elems[_contr] = {name: _contr, minions: [_elid]};
+			} else {
+				_grey.groups[_group].elems[_contr].minions.push(_elid);
 			}
-			if(typeof _grey.elems[_group].elems[_contr] == 'undefined'){
-				_grey.elems[_group].elems[_contr] = ((typeof _grey.elems[_group].elems[_contr] === 'undefined') ? {name: _contr, minions: [elem.id]} : _grey.elems[_group].elems[_contr]);
-			}
-			_grey.elems[_group].elems[_contr].minions.push(elem.id);
 		}
-		/*for(i = 0, a = elem.attributes, l = a.length; i < l; i++){
-			attrib = a[i];
-			if(typeof attrib.nodeName !== 'undefined' && attrib.nodeName.indexOf('data-greyout-') >= 0){
-				_name = attrib.nodeName.substr(13);
-				switch(_name){
-					case 'type':
-						if(attrib.nodeValue === 'controller'){
-							_grey.elems[elem.id] = ((typeof _grey.elems[elem.id] === 'undefined') ? {name: elem.id, minions: []} : _grey.elems[elem.id]);
-						}
-						break;
-					case 'controller':
-						if(typeof _grey.elems[attrib.nodeValue] === 'object'){
-							_grey.elems[attrib.nodeValue].minions.push(elem.id);
-						} else {
-							_grey.elems[attrib.nodeValue] = {name: attrib.nodeValue, minions: [elem.id]};
-						}
-						break;
-				}
-			}
-		}*/
 	};
 	_grey.keyup = function(e){
-		if(e.target.value.length > 0){
-			for(el in _grey.elems){
-				if(el !== e.target.id){
-					el = _grey.elems[el];
-					_grey.hider(el.name);
-					for(i = 0, l = el.minions.length; i < l; i++){
-						_grey.hider(el.minions[i]);
-					}
-				}
-			}
-		} else {
-			for(el in _grey.elems){
-				if(el !== e.target.id){
-					el = _grey.elems[el];
-					_grey.shower(el.name);
-					for(i = 0, l = el.minions.length; i < l; i++){
-						_grey.shower(el.minions[i]);
+		_elem = jQuery("#"+this.id);
+		for(gr in _grey.groups){
+			if(gr === _elem.data('greyout-group')){
+				for(el in _grey.groups[gr].elems){
+					if(el !== e.target.id){
+						el = _grey.groups[gr].elems[el];
+						if(e.target.value.length > 0){
+							_grey.hider(el.name);
+						} else {
+							_grey.shower(el.name);
+						}
+						for(i = 0, l = el.minions.length; i < l; i++){
+							if(e.target.value.length > 0){
+								_grey.hider(el.minions[i]);
+							} else {
+								_grey.shower(el.minions[i]);
+							}
+						}
 					}
 				}
 			}
@@ -117,18 +97,21 @@ var greyout = function(opts){
 			_grey.parseAttribs(v);
 		});
 	} else {
-		_grey.elems = opts.ids;
+		_grey.groups = opts.hierarchy;
 	}
 
-	for(elem in _grey.elems){
-		elem = _grey.elems[elem];
-		if(typeof elem.name !== 'undefined'){
-			jQuery('#'+elem.name).on('keyup', _grey.keyup);
+	for(gr in _grey.groups){
+		gr = _grey.groups[gr];
+		for(elem in gr.elems){
+			elem = gr.elems[elem]
+			if(typeof elem.name !== 'undefined'){
+				jQuery('#'+elem.name).on('keyup', _grey.keyup);
+			}
 		}
 	}
-	console.log(_grey);
 
 	this._grey = _grey;
+	return this;
 }
 
 if(typeof jQuery !== 'undefined'){
