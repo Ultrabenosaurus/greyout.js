@@ -98,7 +98,9 @@ var greyout = function(opts){
 		});
 	} else {
 		_grey.groups = opts.hierarchy;
+		// _grey.assignAttribs();
 	}
+	console.log(_grey.groups);
 
 	for(gr in _grey.groups){
 		gr = _grey.groups[gr];

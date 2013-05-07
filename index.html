@@ -24,24 +24,38 @@
 		 to the constructor, data attributes are ignored
 		-->
 		<div id="container">
-			<input type="text" name="input0" id="input0" data-greyout-group="test" data-greyout-type="controller" />
-			<input type="text" name="input1" id="input1" data-greyout-group="test" data-greyout-type="controller" />
-			<input type="text" name="input2" id="input2" data-greyout-group="test" data-greyout-controller="input0" />
+			<div id='group_1'>
+				<input type="text" name="input0" id="input0" data-greyout-group="group_1" data-greyout-type="controller" />
+				<input type="text" name="input1" id="input1" data-greyout-group="group_1" data-greyout-type="controller" />
+				<input type="text" name="input2" id="input2" data-greyout-group="group_1" data-greyout-controller="input0" />
+			</div>
+			<div id='group_2'>
+				<input type="text" name="input3" id="input3" data-greyout-group="group_2" data-greyout-type="controller" />
+				<input type="text" name="input4" id="input4" data-greyout-group="group_2" data-greyout-type="controller" />
+				<input type="text" name="input5" id="input5" data-greyout-group="group_2" data-greyout-controller="input3" />
+			</div>
 		</div>
 		<!-- <div id="container">
-			<input type="text" name="input0" id="input0" />
-			<input type="text" name="input1" id="input1" />
-			<input type="text" name="input2" id="input2" />
+			<div id='group_1'>
+				<input type="text" name="input0" id="input0" />
+				<input type="text" name="input1" id="input1" />
+				<input type="text" name="input2" id="input2" />
+			</div>
+			<div id='group_2'>
+				<input type="text" name="input3" id="input3" />
+				<input type="text" name="input4" id="input4" />
+				<input type="text" name="input5" id="input5" />
+			</div>
 		</div> -->
 	</body>
 	<script src='jquery-1.9.1.min.js'></script>
 	<script src='greyout.js'></script>
 	<script>
-	// $.greyout();
-	$.greyout({
+	$.greyout();
+	/*$.greyout({
 		hierarchy: {
-			test: {
-				name: 'test',
+			group_1: {
+				name: 'group_1',
 				elems: {
 					input0: {
 						name: 'input0',
@@ -54,8 +68,23 @@
 						minions: []
 					}
 				}
+			},
+			group_2: {
+				name: 'group_2',
+				elems: {
+					input3: {
+						name: 'input3',
+						minions: [
+							'input5'
+						]
+					},
+					input4: {
+						name: 'input4',
+						minions: []
+					}
+				}
 			}
 		}
-	});
+	});*/
 	</script>
 </html>
