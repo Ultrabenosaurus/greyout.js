@@ -2,7 +2,7 @@
 
 A jQuery plugin to easily implement mutually exclusive form fields.
 
-Currently only works on text fields via `$.greyout();`.
+Currently only works on text fields.
 
 ## the theory ##
 
@@ -18,6 +18,11 @@ Currently only works on text fields via `$.greyout();`.
 * add support for `select` boxes
 
 ## usage ##
+
+You can use this plugin in two ways:
+
+* data attributes on the `input` elements
+* pass the constructor an object outlining the `controller` - `minion` relationships
 
 ### method one ###
 
