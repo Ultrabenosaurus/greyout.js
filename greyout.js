@@ -4,7 +4,21 @@ var greyout = function(opts){
 	var _grey = {};
 	_grey.find = ((typeof opts === 'undefined') ? true : ((typeof opts.hierarchy === 'undefined') ? true : false ));
 	_grey.act = ((typeof opts !== 'undefined') ? ((typeof opts.act === 'undefined') ? 'disable' : opts.act ) : 'disable');
+	_grey.logging = ((typeof opts !== 'undefined') ? ((typeof opts.logging === 'undefined') ? 0 : ((typeof opts.logging === 'number' && opts.logging >= 0) ? opts.logging : 0) ) : 0);
 
+	_grey.logger = function(){
+		if(typeof console === 'undefined' || typeof console.log === 'undefined') return false;
+		if(arguments.length < 1) return false;
+		arguments = Array.prototype.slice.call(arguments);
+		if(arguments.length < 2) arguments.push(1);
+
+		if(arguments.pop() <= _grey.logging){
+			console.log.apply(console, arguments);
+			if(typeof console !== 'undefined'){
+				console.trace();
+			}
+		}
+	};
 	_grey.parseAttribs = function(elem){
 		_grey.groups = _grey.groups || {};
 		elem = ((typeof elem === 'object') ? jQuery(elem) : jQuery('#'+elem));
@@ -100,7 +114,7 @@ var greyout = function(opts){
 		_grey.groups = opts.hierarchy;
 		// _grey.assignAttribs();
 	}
-	console.log(_grey.groups);
+	_grey.logger(_grey.groups, 1);
 
 	for(gr in _grey.groups){
 		gr = _grey.groups[gr];
