@@ -12,6 +12,7 @@ Currently only works on text fields.
 
 ## to do ##
 
+* ensure that an element doesn't get re-enabled if ANY of its controllers still have a value
 * expand to support all `input` types
 * add support for `select` boxes
 
