@@ -72,6 +72,11 @@ var greyout = function(opts){
 		}
 	};
 	_grey.shower = function(elem){
+		_contr = _grey.elems[elem].controllers;
+		for(i = 0, l = _contr.length; i < l; i++){
+			if(jQuery('#'+_contr[i]).val().length > 0) return false;
+		}
+
 		elem = '#'+elem;
 		jQuery(elem).attr('placeholder', null);
 		if(typeof jQuery(elem).attr('data-greyout-oldval') !== 'undefined'){
