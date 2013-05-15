@@ -59,6 +59,7 @@ var greyout = function(opts){
 		if(jQuery(elem).val().length > 0){
 			jQuery(elem).attr('data-greyout-oldval', jQuery(elem).val());
 			jQuery(elem).val(null);
+			_grey.keyup(elem);
 		}
 		switch(_grey.action){
 			case 'hide':
