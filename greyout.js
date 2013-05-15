@@ -41,11 +41,13 @@ var greyout = function(opts){
 		}
 	};
 	_grey.keyup = function(e){
-		_elem = jQuery("#"+this.id);
+		_elem = ((typeof e.target === 'undefined') ? e : "#"+e.target.id);
+		_elem = jQuery(_elem);
+		// _grey.logger(_elem, _elem.val(), 9);
 		for(el in _grey.elems){
 			_contr = _grey.elems[el].controllers;
-			if(_contr.indexOf(this.id) >= 0){
-				if(e.target.value.length > 0){
+			if(_contr.indexOf(_elem[0].id) >= 0){
+				if(_elem.val().length > 0){
 					_grey.hider(_grey.elems[el].name);
 				} else {
 					_grey.shower(_grey.elems[el].name);
@@ -82,6 +84,7 @@ var greyout = function(opts){
 		if(typeof jQuery(elem).attr('data-greyout-oldval') !== 'undefined'){
 			jQuery(elem).val(jQuery(elem).attr('data-greyout-oldval'));
 			jQuery(elem).removeAttr('data-greyout-oldval');
+			_grey.keyup(elem);
 		}
 		switch(_grey.action){
 			case 'hide':
@@ -95,7 +98,7 @@ var greyout = function(opts){
 		}
 	};
 	
-	_grey.logger(_grey, 10)
+	// _grey.logger(_grey, 10);
 
 	if(_grey.find){
 		jQuery.each(jQuery('input'), function(i, v){
