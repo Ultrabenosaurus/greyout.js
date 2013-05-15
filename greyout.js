@@ -5,9 +5,10 @@ var greyout = function(opts){
 	_grey.find = ((typeof opts === 'undefined') ? true : ((typeof opts.hierarchy === 'undefined') ? true : false ));
 	_grey.action = ((typeof opts !== 'undefined') ? ((typeof opts.action === 'undefined') ? 'disable' : opts.action ) : 'disable');
 	_grey.placeholder = ((typeof opts !== 'undefined') ? ((typeof opts.placeholder === 'undefined') ? null : opts.placeholder ) : null);
-	_grey.contro_class = ((typeof opts !== 'undefined') ? ((typeof opts.contro_class === 'undefined') ? null : opts.contro_class ) : null);
-	_grey.condi_class = ((typeof opts !== 'undefined') ? ((typeof opts.condi_class === 'undefined') ? null : opts.condi_class ) : null);
-	_grey.dis_class = ((typeof opts !== 'undefined') ? ((typeof opts.dis_class === 'undefined') ? null : opts.dis_class ) : null);
+	_grey.contro_class = ((typeof opts !== 'undefined') ? ((typeof opts.controller_class === 'undefined') ? null : opts.controller_class ) : null);
+	_grey.condi_class = ((typeof opts !== 'undefined') ? ((typeof opts.conditional_class === 'undefined') ? null : opts.conditional_class ) : null);
+	_grey.rem_condi = ((typeof opts !== 'undefined') ? ((typeof opts.remove_conditional_class === 'undefined') ? true : false ) : true);
+	_grey.dis_class = ((typeof opts !== 'undefined') ? ((typeof opts.disabled_class === 'undefined') ? null : opts.disabled_class ) : null);
 	_grey.logging = ((typeof opts !== 'undefined') ? ((typeof opts.logging === 'undefined') ? 0 : ((typeof opts.logging === 'number' && opts.logging >= 0) ? opts.logging : 0) ) : 0);
 
 	_grey.logger = function(){
@@ -70,6 +71,9 @@ var greyout = function(opts){
 			default:
 				jQuery(elem).attr('placeholder', _grey.placeholder);
 				jQuery(elem).attr('disabled', 'disabled');
+				if(_grey.dis_class !== false){
+					jQuery(elem).addClass(((_grey.dis_class !== null) ? _grey.dis_class : "greyout-disabled"));
+				}
 				break;
 		}
 	};
@@ -94,10 +98,12 @@ var greyout = function(opts){
 			case 'disable':
 			default:
 				jQuery(elem).removeAttr('disabled');
+				jQuery(elem).removeClass("greyout-disabled "+_grey.dis_class);
 				break;
 		}
 	};
 
+	/* populate _grey.elems with an element relationship map */
 	if(_grey.find){
 		jQuery.each(jQuery('input'), function(i, v){
 			_grey.parseAttribs(v);
@@ -106,13 +112,42 @@ var greyout = function(opts){
 		_grey.elems = opts.hierarchy;
 	}
 
+	/* attempt to apply conditional and controller classes */
+	if(_grey.condi_class !== false){
+		jQuery.each(_grey.elems, function(i, v){
+			jQuery('#'+v.name).addClass(function(i, c){
+				if(c.indexOf(_grey.condi_class) < 0){
+					return ((_grey.condi_class !== null) ? _grey.condi_class : "greyout-conditional");
+				}
+			});
+		});
+	}
+	if(_grey.contro_class !== false){
+		jQuery.each(_grey.elems, function(i, v){
+			jQuery.each(v.controllers, function(i, c){
+				if(_grey.rem_condi){
+					jQuery('#'+c).removeClass("greyout-conditional "+_grey.condi_class);
+				}
+				jQuery('#'+c).addClass(function(i, _c){
+					if(_c.indexOf(_grey.contro_class) < 0){
+						return ((_grey.contro_class !== null) ? _grey.contro_class : "greyout-controller");
+					}
+				});
+			});
+		});
+	}
+
+	/* apply keyup event listeners to controllers */
 	for(el in _grey.elems){
-		_contr = _grey.elems[el].controllers;
-		for(_elem in _contr){
-			jQuery('#'+_contr[_elem]).on('keyup', _grey.keyup);
+		if(typeof _grey.elems[el] !== 'undefined'){
+			_contr = _grey.elems[el].controllers;
+			for(_elem in _contr){
+				jQuery('#'+_contr[_elem]).on('keyup', _grey.keyup);
+			}
 		}
 	}
 
+	/* return object */
 	this._grey = _grey;
 	return this;
 }
