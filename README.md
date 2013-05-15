@@ -9,9 +9,11 @@ Currently only works on text fields.
 * some form elements are only needed if certain other elements aren't used
 * for each conditional element, specify the IDs of the element(s) that 'control' them
 * when any element that has been identified as a `controller` gets a value, the elements that have it as a `controller` will be disabled
+* try to re-enable elements when a controller is disabled
 
 ## to do ##
 
+* implement adding/managing classes
 * expand to support all `input` types
 * add support for `select` boxes
 
