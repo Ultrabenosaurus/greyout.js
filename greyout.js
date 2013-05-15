@@ -3,7 +3,11 @@ var greyout = function(opts){
 	if(opts !== undefined && typeof opts !== 'object') return false;
 	var _grey = {};
 	_grey.find = ((typeof opts === 'undefined') ? true : ((typeof opts.hierarchy === 'undefined') ? true : false ));
-	_grey.act = ((typeof opts !== 'undefined') ? ((typeof opts.act === 'undefined') ? 'disable' : opts.act ) : 'disable');
+	_grey.action = ((typeof opts !== 'undefined') ? ((typeof opts.action === 'undefined') ? 'disable' : opts.action ) : 'disable');
+	_grey.placeholder = ((typeof opts !== 'undefined') ? ((typeof opts.placeholder === 'undefined') ? null : opts.placeholder ) : null);
+	_grey.contro_class = ((typeof opts !== 'undefined') ? ((typeof opts.contro_class === 'undefined') ? null : opts.contro_class ) : null);
+	_grey.condi_class = ((typeof opts !== 'undefined') ? ((typeof opts.condi_class === 'undefined') ? null : opts.condi_class ) : null);
+	_grey.dis_class = ((typeof opts !== 'undefined') ? ((typeof opts.dis_class === 'undefined') ? null : opts.dis_class ) : null);
 	_grey.logging = ((typeof opts !== 'undefined') ? ((typeof opts.logging === 'undefined') ? 0 : ((typeof opts.logging === 'number' && opts.logging >= 0) ? opts.logging : 0) ) : 0);
 
 	_grey.logger = function(){
@@ -37,11 +41,12 @@ var greyout = function(opts){
 		}
 	};
 	_grey.keyup = function(e){
-		_elem = jQuery("#"+this.id);
+		_elem = ((typeof e.target === 'undefined') ? e : "#"+e.target.id);
+		_elem = jQuery(_elem);
 		for(el in _grey.elems){
 			_contr = _grey.elems[el].controllers;
-			if(_contr.indexOf(this.id) >= 0){
-				if(e.target.value.length > 0){
+			if(_contr.indexOf(_elem[0].id) >= 0){
+				if(_elem.val().length > 0){
 					_grey.hider(_grey.elems[el].name);
 				} else {
 					_grey.shower(_grey.elems[el].name);
@@ -55,24 +60,32 @@ var greyout = function(opts){
 			jQuery(elem).attr('data-greyout-oldval', jQuery(elem).val());
 			jQuery(elem).val(null);
 		}
-		switch(_grey.act){
+		switch(_grey.action){
 			case 'hide':
 				if(jQuery.hide){
 					jQuery(elem).hide();
 				}
 			case 'disable':
 			default:
+				jQuery(elem).attr('placeholder', _grey.placeholder);
 				jQuery(elem).attr('disabled', 'disabled');
 				break;
 		}
 	};
 	_grey.shower = function(elem){
+		_contr = _grey.elems[elem].controllers;
+		for(i = 0, l = _contr.length; i < l; i++){
+			if(jQuery('#'+_contr[i]).val().length > 0) return false;
+		}
+
 		elem = '#'+elem;
+		jQuery(elem).attr('placeholder', null);
 		if(typeof jQuery(elem).attr('data-greyout-oldval') !== 'undefined'){
 			jQuery(elem).val(jQuery(elem).attr('data-greyout-oldval'));
 			jQuery(elem).removeAttr('data-greyout-oldval');
+			_grey.keyup(elem);
 		}
-		switch(_grey.act){
+		switch(_grey.action){
 			case 'hide':
 				if(jQuery.show){
 					jQuery(elem).show();
@@ -91,7 +104,7 @@ var greyout = function(opts){
 	} else {
 		_grey.elems = opts.hierarchy;
 	}
-	
+
 	for(el in _grey.elems){
 		_contr = _grey.elems[el].controllers;
 		for(_elem in _contr){
